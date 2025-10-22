@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
 import { Person } from '../types';
+import { PersonLink } from './PersonalLink';
 
 type Props = {
   people: Person[];
@@ -14,27 +14,6 @@ export const PeopleTable = ({
   onSelect,
   resolveRelative,
 }: Props) => {
-  const renderRelative = (name?: string | null) => {
-    if (!name) {
-      return <span>-</span>;
-    }
-
-    const rel = resolveRelative(name);
-
-    if (!rel) {
-      return <span>{name}</span>;
-    }
-
-    return (
-      <Link
-        to={`/people/${rel.slug}`}
-        className={rel.sex === 'f' ? 'has-text-danger' : 'has-text-link'}
-      >
-        {name}
-      </Link>
-    );
-  };
-
   return (
     <tbody>
       {people.map(p => (
@@ -46,18 +25,17 @@ export const PeopleTable = ({
           style={{ cursor: 'pointer' }}
         >
           <td>
-            <Link
-              to={`/people/${p.slug}`}
-              className={p.sex === 'f' ? 'has-text-danger' : 'has-text-link'}
-            >
-              {p.name}
-            </Link>
+            <PersonLink name={p.name} resolve={resolveRelative} />
           </td>
           <td>{p.sex}</td>
           <td>{p.born}</td>
           <td>{p.died}</td>
-          <td>{renderRelative(p.motherName)}</td>
-          <td>{renderRelative(p.fatherName)}</td>
+          <td>
+            <PersonLink name={p.motherName} resolve={resolveRelative} />
+          </td>
+          <td>
+            <PersonLink name={p.fatherName} resolve={resolveRelative} />
+          </td>
         </tr>
       ))}
     </tbody>
